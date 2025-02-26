@@ -182,6 +182,20 @@ private:
             return false;
         }
 
+        // Set the TX power to the maximum allowed value.
+        // The value 78 is specified in quarter dBm units (78/4 = 19.5 dBm).
+        // This maximizes the transmission strength.
+        esp_err_t txPowerResult = esp_wifi_set_max_tx_power(78);
+        if (txPowerResult == ESP_OK)
+        {
+            Serial.println("TX power set to maximum.");
+        }
+        else
+        {
+            Serial.printf("Failed to set TX power to maximum. Error code: %d\n", txPowerResult);
+            return false;
+        }
+
         // Initialize ESPNOW protocol.
         if (esp_now_init() != ESP_OK)
         {
