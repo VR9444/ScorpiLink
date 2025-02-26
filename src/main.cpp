@@ -18,12 +18,14 @@ int i_send = 10; // 10 - send packet esc
 
 void setup()
 {
-  Serial.begin(38400);
+  // updated SERIAL BAUD RATE
+  Serial.begin(115200);
   delay(10);
 
   ScnTel.init();
   delay(10);
 
+  // FIX SERIAL_TX_ONLY
   Serial1.begin(CRSF_BAUDRATE, SERIAL_8N1, SERIAL_TX_ONLY, 2);
   delay(10);
 
@@ -80,6 +82,10 @@ void loop()
     time0 = millis();
   }
 
+  //
+  // Commment next if statement if acknowledge packet is not needed
+  //
+  //
   // Run processReceivedMessages at 20 Hz (every 50 ms)
   static unsigned long lastProcessTime = 0;
   if (millis() - lastProcessTime >= 50)
@@ -88,7 +94,12 @@ void loop()
     nowManager.checkIfSent(); // if acknowledge packet is not received it sends Release status again
     lastProcessTime = millis();
   }
+  //
+  //
+  //
 
+  //
+  //
   // Run sendReleaseStatus every 5 seconds with a random number between 0 and 2
   static unsigned long lastSendReleaseTime = 0;
   if (millis() - lastSendReleaseTime >= 5000)
