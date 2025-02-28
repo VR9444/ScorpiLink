@@ -39,16 +39,35 @@ namespace CrsfFront
 
             crsf_sensor_attitude_t crsfAttitude = {0};
 
+            Serial.println("Temp=" +String(temp));
+
+
+            // This scales temp, so that when converted in edge tx
+            // to angle degrees, it shows temperature in degC
+            const float temp_to_milirad = temp * 174.53;
+
             // Values are MSB first (BigEndian)
-            crsfAttitude.pitch = htobe16((uint16_t)(temp * 10000.0));
-            crsfAttitude.roll = htobe16((uint16_t)(alive * 10000.0));
-            crsfAttitude.yaw = htobe16((uint16_t)(0.0 * 10000.0));
+            crsfAttitude.pitch = htobe16((uint16_t)(temp_to_milirad));
+            crsfAttitude.roll = htobe16(0);
+            crsfAttitude.yaw = htobe16(0);
 
             m_crsf.queuePacket(CRSF_SYNC_BYTE, CRSF_FRAMETYPE_ATTITUDE, &crsfAttitude, sizeof(crsfAttitude));
         }
 
+        void readChannels() {
+            m_crsf.update();
+            m_ch14 = m_crsf.getChannel(14);
+        }
+
+
+        const int getReleaseCh14() {
+            return m_ch14;
+        }
+
     private:
         AlfredoCRSF m_crsf;
+
+        int m_ch14{1500};
     };
 
 }

@@ -7,13 +7,17 @@ namespace ScorpioTel {
 
     class ScorpioTel {
     public:
-        ScorpioTel() = default;
+        ScorpioTel(HardwareSerial& serial) 
+            : m_serial(serial)
+        {
+            
+        }
 
         void init(long baudRate = 38400) {
-            Serial.begin(baudRate);
+            m_serial.begin(baudRate, SERIAL_8N1, 16, 17);
             delay(100);
 
-            Serial.println("Hello from scorpion telemetry sniffer");
+            m_serial.println("Hello from scorpion telemetry sniffer");
             delay(100);
         }
 
@@ -21,9 +25,9 @@ namespace ScorpioTel {
 
             handleTimeout();
 
-            if (not (Serial.available() > 0)) return;
+            if (not (m_serial.available() > 0)) return;
 
-            const uint8_t sbyte = Serial.read();
+            const uint8_t sbyte = m_serial.read();
 
             if ((not m_startPacket) and (sbyte == START_BYTE)) {
                 m_startPacket = true;
@@ -126,6 +130,8 @@ namespace ScorpioTel {
 
                 return(crc16_data);
             }
+
+            HardwareSerial& m_serial;
 
             bool m_startPacket{false};
             bool m_packetFinished{false};
