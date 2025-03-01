@@ -287,7 +287,7 @@ private:
     void handleRecv(const uint8_t *buffer)
     {
         int recv = bytesToInt(buffer + 1);
-        Serial.println(recv);
+        // Serial.println(recv);
         sysData->droneReleaseStatus = bytesToInt(buffer + 1);
     }
 
